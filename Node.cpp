@@ -63,6 +63,41 @@ Node* Node::getParent() {
   return parent;
 }
 
+// Get grandparent Node ptr (parent of parent)
+Node* Node::getGrandparent() {
+  // NO parent = NO grandparent
+  if (parent == nullptr) {
+    return nullptr;
+  }
+  return parent->parent;
+}
+
+// Get sibling Node ptr (share parent)
+Node* Node::getSibling() {
+  // NO parent = NO sibling
+  if (parent == nullptr) {
+    return nullptr;
+  }
+  // if LEFT child, sibling = RIGHT
+  else if (this == parent->left) {
+    return parent->right;
+  }
+  // if RIGHT child, sibling = LEFT
+  else {
+    return parent->left;
+  }
+}
+
+// Get uncle (OR aunt) Node ptr (sibling of parent)
+Node* Node::getUncle() {
+  // NO grandparent OR NO parent = NO uncle
+  if ((this->getGrandparent() || parent) == nullptr) {
+    return nullptr;
+  }
+  // uncle = SIBLING of parent
+  return parent->getSibling();
+}
+
 // Destructor
 Node::~Node() {
   left = nullptr;

@@ -25,6 +25,10 @@ class Node {
   void setParent(Node*);
   Node* getParent();
 
+  Node* getGrandparent();
+  Node* getSibling();
+  Node* getUncle();
+
   ~Node();
  private:
   int value;
