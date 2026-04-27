@@ -20,6 +20,10 @@ void stringUpper(string& input);
 void leftRotate(Node* x, Node* NIL, Node*& root);
 void rightRotate(Node* x, Node* NIL, Node*& root);
 
+void insert(int value, Node*& root);
+
+void treeCorrections(Node* n);
+
 // read()
 // print()
 
@@ -126,3 +130,47 @@ void rightRotate(Node* x, Node* NIL, Node*& root) {
   x->setParent() = y;
 }
 
+
+// Insert new Node like in BST then fix RBT violations 
+void insert(int value, Node*& root) {
+  // Initialize new Node
+  Node* newNode = new Node(value);
+  newNode->setLeft() = NIL;
+  newNode->setRight() = NIL;
+
+  Node* parent = nullptr;
+  Node* current = root;
+
+  // STEP 1: Insert using BST rules
+  while (current != NIL) {
+    parent = current;
+
+    if (newNode->getValue() < current->getValue()) { // Traverse LEFT
+      current = current->getLeft();
+    } else { // Traverse RIGHT
+      current = current->getRight();
+    }  
+  }
+
+  newNode->setParent() = parent;
+
+  if (parent == nullptr) { // EMPTY tree
+    root = newNode;
+  } else if (newNode->getValue() < parent->getValue()) { // LESS than parent
+    parent->setLeft() = newNode;
+  } else { // GREATER than parent
+    parent->setRight() = newNode;
+  }
+
+  // STEP 2: Fix RBT violations
+  if (newNode->getParent() == nullptr) { // EMPTY tree
+    newNode->setIsRed() = false;
+    return;
+  }
+
+  if (newNode->getGrandparent() == nullptr) { // parent = root
+    return;
+  }
+
+  treeCorrections(newNode);
+}
