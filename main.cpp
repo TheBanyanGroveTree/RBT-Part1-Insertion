@@ -174,3 +174,56 @@ void insert(int value, Node*& root) {
 
   treeCorrections(newNode);
 }
+
+
+// Fix RBT violations
+void treeCorrections(Node* n) {
+  // Continue while parent is RED
+  while ((n != root) && (n->getParent->getIsRed())) {
+    Node* uncle = n->getUncle();
+
+    // Parent = LEFT child
+    if (n->getParent() == n->getGrandparent()->getLeft()) {
+      if (uncle->getIsRed()) {
+	// CASE 1: RED uncle = recolor parent, uncle, and grandparent
+	n->getParent()->setIsRed() = false;
+	uncle->setIsRed() = false;
+	n->getGrandparent()->setIsRed() = true;
+	n = n->getGrandparent(); // Move up tree for next iteration
+      } else {
+	if (n == n->getParent->getRight()) { // n = RIGHT child
+	  // CASE 2: left rotate parent
+	  n = n->getParent();
+	  leftRotate(n);
+	}
+
+	// CASE 3: recolor and right rotate grandparent
+	n->getParent()->setIsRed() = false;
+	n->getGrandparent()->setIsRed() = true;
+	rightRotate(n->getGrandparent());
+      }
+    }
+    // MIRROR CASE: parent = RIGHT child
+    else {
+      if (uncle->getIsRed()) {
+	n->getParent()->setIsRed() = false;
+	uncle->setIsRed() = false;
+	n->getGrandparent()->setIsRed() = true;
+	n = n->getGrandparent(); // Move up tree for next iteration
+      } else {
+	if (n == n->getParent()->getLeft()) { // n = LEFT child
+	  // CASE 4: right rotate parent
+	  n = n->getParent();
+	  rightRotate(n);
+	}
+
+	// CASE 5: recolor and left rotate grandparent
+	n->getParent()->setIsRed() = false;
+	n->getGrandparent()->setIsRed() = true;
+	leftRotate(n->getGrandparent());
+      }
+    }
+  }
+
+  root->setIsRed() = false; // RULE 2: root is always black
+}
