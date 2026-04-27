@@ -19,11 +19,11 @@ void stringUpper(string& input);
 
 void leftRotate(Node* x, Node* NIL, Node*& root);
 void rightRotate(Node* x, Node* NIL, Node*& root);
-void insert(int value, Node*& root);
-void treeCorrections(Node* n);
+void insert(int value, Node* NIL, Node*& root);
+void treeCorrections(Node* n, Node* NIL, Node*& root);
 
-void add();
-void read();
+void add(Node* NIL, Node* root);
+void read(Node* NIL, Node* root);
 void print(Node* root, int depth);
 
 
@@ -49,9 +49,9 @@ int main() {
 
     // Validate input and call appropriate method or exit program
     if (userCommand == "ADD") {
-      add();
+      add(NIL, root);
     } else if (userCommand == "READ") {
-      read();
+      read(NIL, root);
     } else if (userCommand == "PRINT") {
       print(root, 0);
     } else if (userCommand == "QUIT") {
@@ -79,26 +79,26 @@ void leftRotate(Node* x, Node* NIL, Node*& root) {
   Node* y = x->getRight(); // Node to be promoted
 
   // 1. HANDOVER: detach subtree (NEW x right subtree = OLD y left subtree)
-  x->setRight() = y->getLeft();
+  x->setRight(y->getLeft());
   if (y->getLeft() != NIL) {
-    y->getLeft()->setParent() = x;
+    y->getLeft()->setParent(x);
   }
 
   // 2. PARENT LINK: connect y to tree
-  y->setParent() = x->getParent(); // NEW y parent = OLD x parent
+  y->setParent(x->getParent()); // NEW y parent = OLD x parent
   
   // Connect NEW x parent to y
   if (x->getParent() == nullptr) { // x = ROOT
     root = y;
-  } else if (x == x->getParent->getLeft()) { // x = LEFT child
-    x->getParent->setLeft() = y;
+  } else if (x == x->getParent()->getLeft()) { // x = LEFT child
+    x->getParent()->setLeft(y);
   } else { // x = RIGHT child
-    x->getParent->setRight = y;
+    x->getParent()->setRight(y);
   }
 
   // 3. PIVOT: finalize x-y PARENT-CHILD link
-  y->setLeft() = x; 
-  x->setParent = y;
+  y->setLeft(x); 
+  x->setParent(y);
 }
 
 
@@ -107,35 +107,35 @@ void rightRotate(Node* x, Node* NIL, Node*& root) {
   Node* y = x->getLeft(); // Node to be promoted
 
   // 1. HANDOVER: detach subtree (NEW x left subtree = OLD y right subtree)
-  x->setLeft() = y->getRight();
-  if (y->getRight != NIL) {
-    y->getRight->setParent() = x;
+  x->setLeft(y->getRight());
+  if (y->getRight() != NIL) {
+    y->getRight()->setParent(x);
   }
 
   // 2. PARENT LINK: connect y to tree
-  y->setParent = x->getParent();
+  y->setParent(x->getParent());
 
   // Connect NEW x parent to y
   if (x->getParent() == nullptr) { // x = ROOT
     root = y;
-  } else if (x == x->getParent->getLeft()) { // x = LEFT child
-    x->getParent->setLeft() = y;
+  } else if (x == x->getParent()->getLeft()) { // x = LEFT child
+    x->getParent()->setLeft(y);
   } else { // x = RIGHT child
-    x->getParent->setRight = y;
+    x->getParent()->setRight(y);
   }
 
   // 3. PIVOT: finalize x-y PARENT-CHILD link
-  y->setRight() = x;
-  x->setParent() = y;
+  y->setRight(x);
+  x->setParent(y);
 }
 
 
 // Insert new Node like in BST then fix RBT violations 
-void insert(int value, Node*& root) {
+void insert(int value, Node* NIL, Node*& root) {
   // Initialize new Node
   Node* newNode = new Node(value);
-  newNode->setLeft() = NIL;
-  newNode->setRight() = NIL;
+  newNode->setLeft(NIL);
+  newNode->setRight(NIL);
 
   Node* parent = nullptr;
   Node* current = root;
@@ -151,19 +151,19 @@ void insert(int value, Node*& root) {
     }  
   }
 
-  newNode->setParent() = parent;
+  newNode->setParent(parent);
 
   if (parent == nullptr) { // EMPTY tree
     root = newNode;
   } else if (newNode->getValue() < parent->getValue()) { // LESS than parent
-    parent->setLeft() = newNode;
+    parent->setLeft(newNode);
   } else { // GREATER than parent
-    parent->setRight() = newNode;
+    parent->setRight(newNode);
   }
 
   // STEP 2: Fix RBT violations
   if (newNode->getParent() == nullptr) { // EMPTY tree
-    newNode->setIsRed() = false;
+    newNode->setIsRed(false);
     return;
   }
 
@@ -171,65 +171,65 @@ void insert(int value, Node*& root) {
     return;
   }
 
-  treeCorrections(newNode);
+  treeCorrections(newNode, NIL, root);
 }
 
 
 // Fix RBT violations
-void treeCorrections(Node* n) {
+void treeCorrections(Node* n, Node* NIL, Node*& root) {
   // Continue while parent is RED
-  while ((n != root) && (n->getParent->getIsRed())) {
+  while ((n != root) && (n->getParent()->getIsRed())) {
     Node* uncle = n->getUncle();
 
     // Parent = LEFT child
     if (n->getParent() == n->getGrandparent()->getLeft()) {
       if (uncle->getIsRed()) {
 	// CASE 1: RED uncle = recolor parent, uncle, and grandparent
-	n->getParent()->setIsRed() = false;
-	uncle->setIsRed() = false;
-	n->getGrandparent()->setIsRed() = true;
+	n->getParent()->setIsRed(false);
+	uncle->setIsRed(false);
+	n->getGrandparent()->setIsRed(true);
 	n = n->getGrandparent(); // Move up tree for next iteration
       } else {
-	if (n == n->getParent->getRight()) { // n = RIGHT child
+	if (n == n->getParent()->getRight()) { // n = RIGHT child
 	  // CASE 2: left rotate parent
 	  n = n->getParent();
-	  leftRotate(n);
+	  leftRotate(n, NIL, root);
 	}
 
 	// CASE 3: recolor and right rotate grandparent
-	n->getParent()->setIsRed() = false;
-	n->getGrandparent()->setIsRed() = true;
-	rightRotate(n->getGrandparent());
+	n->getParent()->setIsRed(false);
+	n->getGrandparent()->setIsRed(true);
+	rightRotate(n->getGrandparent(), NIL, root);
       }
     }
     // MIRROR CASE: parent = RIGHT child
     else {
       if (uncle->getIsRed()) {
-	n->getParent()->setIsRed() = false;
-	uncle->setIsRed() = false;
-	n->getGrandparent()->setIsRed() = true;
+	n->getParent()->setIsRed(false);
+	uncle->setIsRed(false);
+	n->getGrandparent()->setIsRed(true);
 	n = n->getGrandparent(); // Move up tree for next iteration
       } else {
 	if (n == n->getParent()->getLeft()) { // n = LEFT child
 	  // CASE 4: right rotate parent
 	  n = n->getParent();
-	  rightRotate(n);
+	  rightRotate(n, NIL, root);
 	}
 
 	// CASE 5: recolor and left rotate grandparent
-	n->getParent()->setIsRed() = false;
-	n->getGrandparent()->setIsRed() = true;
-	leftRotate(n->getGrandparent());
+	n->getParent()->setIsRed(false);
+	n->getGrandparent()->setIsRed(true);
+	leftRotate(n->getGrandparent(), NIL, root);
       }
     }
   }
 
-  root->setIsRed() = false; // RULE 2: root is always black
+  root->setIsRed(false); // RULE 2: root is always black
 }
 
 
 // Insert by manually inputting numbers
-void add() {
+void add(Node* NIL, Node* root) {
   // Prompt user for manual input to fill RBT
   cout << "Enter integers from 1-999 separated by spaces." << endl;
 
@@ -240,19 +240,19 @@ void add() {
   stringstream ss(inputLine);
   int value = 0;
   while (ss >> value) {
-    insert(value, root);
+    insert(value, NIL, root);
   }
 }
 
 
 // Insert by reading a file
-void read() {
+void read(Node* NIL, Node* root) {
   ifstream file("numbers.txt"); // Open file
 
   // Read in space separated numbers
   int value = 0;
   while (file >> value) {
-    insert(value, root);
+    insert(value, NIL, root);
   }
   
   file.close();

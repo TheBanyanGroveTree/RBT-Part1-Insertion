@@ -91,7 +91,7 @@ Node* Node::getSibling() {
 // Get uncle (OR aunt) Node ptr (sibling of parent)
 Node* Node::getUncle() {
   // NO grandparent OR NO parent = NO uncle
-  if ((this->getGrandparent() || parent) == nullptr) {
+  if ((this->getGrandparent() == nullptr) || (parent == nullptr)) {
     return nullptr;
   }
   // uncle = SIBLING of parent
