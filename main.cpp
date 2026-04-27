@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <fstream>
 #include "Node.h"
 
 
@@ -21,8 +23,8 @@ void insert(int value, Node*& root);
 void treeCorrections(Node* n);
 
 void add();
-void read()
-void print()
+void read();
+void print(Node* root, int depth);
 
 
 int main() {
@@ -51,7 +53,7 @@ int main() {
     } else if (userCommand == "READ") {
       read();
     } else if (userCommand == "PRINT") {
-      
+      print(root, 0);
     } else if (userCommand == "QUIT") {
       newInput = false; // Change input status
       
@@ -254,4 +256,30 @@ void read() {
   }
   
   file.close();
+}
+
+
+// Traverse RBT recursively to print sideways
+void print(Node* root, int depth) {
+  // Base case
+  if (root == nullptr) {
+    return;
+  }
+
+  // Print RIGHT child first
+  print(root->getRight(), depth + 1);
+
+  // Print current Node with indentation
+  for (int i = 0; i < depth; i++) {
+    cout << '\t';
+  }
+  
+  if (root->getIsRed()) {
+    cout << "[R] " << root->getValue() << endl;
+  } else {
+    cout << "[B] " << root->getValue() << endl;
+  }
+
+  // Then print LEFT child
+  print(root->getLeft(), depth + 1);
 }
