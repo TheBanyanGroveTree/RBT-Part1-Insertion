@@ -22,9 +22,9 @@ void rightRotate(Node* x, Node* NIL, Node*& root);
 void insert(int value, Node* NIL, Node*& root);
 void treeCorrections(Node* n, Node* NIL, Node*& root);
 
-void add(Node* NIL, Node* root);
-void read(Node* NIL, Node* root);
-void print(Node* root, int depth);
+void add(Node* NIL, Node*& root);
+void read(Node* NIL, Node*& root);
+void print(int depth, Node* NIL, Node* root);
 
 
 int main() {
@@ -53,7 +53,7 @@ int main() {
     } else if (userCommand == "READ") {
       read(NIL, root);
     } else if (userCommand == "PRINT") {
-      print(root, 0);
+      print(0, NIL, root);
     } else if (userCommand == "QUIT") {
       newInput = false; // Change input status
       
@@ -178,7 +178,8 @@ void insert(int value, Node* NIL, Node*& root) {
 // Fix RBT violations
 void treeCorrections(Node* n, Node* NIL, Node*& root) {
   // Continue while parent is RED
-  while ((n != root) && (n->getParent()->getIsRed())) {
+  while ((n != root) && (n->getParent() != nullptr) &&
+	 (n->getParent()->getIsRed())) {
     Node* uncle = n->getUncle();
 
     // Parent = LEFT child
@@ -229,7 +230,7 @@ void treeCorrections(Node* n, Node* NIL, Node*& root) {
 
 
 // Insert by manually inputting numbers
-void add(Node* NIL, Node* root) {
+void add(Node* NIL, Node*& root) {
   // Prompt user for manual input to fill RBT
   cout << "Enter integers from 1-999 separated by spaces." << endl;
 
@@ -246,7 +247,7 @@ void add(Node* NIL, Node* root) {
 
 
 // Insert by reading a file
-void read(Node* NIL, Node* root) {
+void read(Node* NIL, Node*& root) {
   ifstream file("numbers.txt"); // Open file
 
   // Read in space separated numbers
@@ -260,14 +261,14 @@ void read(Node* NIL, Node* root) {
 
 
 // Traverse RBT recursively to print sideways
-void print(Node* root, int depth) {
+void print(int depth, Node* NIL, Node* root) {
   // Base case
-  if (root == nullptr) {
+  if (root == NIL) {
     return;
   }
 
   // Print RIGHT child first
-  print(root->getRight(), depth + 1);
+  print(depth + 1, NIL, root->getRight());
 
   // Print current Node with indentation
   for (int i = 0; i < depth; i++) {
@@ -281,5 +282,5 @@ void print(Node* root, int depth) {
   }
 
   // Then print LEFT child
-  print(root->getLeft(), depth + 1);
+  print(depth + 1, NIL, root->getLeft());
 }
