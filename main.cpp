@@ -15,17 +15,14 @@ using namespace std;
 // Define function prototypes
 void stringUpper(string& input);
 
-// add()
-
 void leftRotate(Node* x, Node* NIL, Node*& root);
 void rightRotate(Node* x, Node* NIL, Node*& root);
-
 void insert(int value, Node*& root);
-
 void treeCorrections(Node* n);
 
-// read()
-// print()
+void add();
+void read()
+void print()
 
 
 int main() {
@@ -50,9 +47,9 @@ int main() {
 
     // Validate input and call appropriate method or exit program
     if (userCommand == "ADD") {
-      
+      add();
     } else if (userCommand == "READ") {
-
+      read();
     } else if (userCommand == "PRINT") {
       
     } else if (userCommand == "QUIT") {
@@ -226,4 +223,35 @@ void treeCorrections(Node* n) {
   }
 
   root->setIsRed() = false; // RULE 2: root is always black
+}
+
+
+// Insert by manually inputting numbers
+void add() {
+  // Prompt user for manual input to fill RBT
+  cout << "Enter integers from 1-999 separated by spaces." << endl;
+
+  string inputLine = "";
+  getline(cin, inputLine); // Read entire line
+
+  // Parse line
+  stringstream ss(inputLine);
+  int value = 0;
+  while (ss >> value) {
+    insert(value, root);
+  }
+}
+
+
+// Insert by reading a file
+void read() {
+  ifstream file("numbers.txt"); // Open file
+
+  // Read in space separated numbers
+  int value = 0;
+  while (file >> value) {
+    insert(value, root);
+  }
+  
+  file.close();
 }
